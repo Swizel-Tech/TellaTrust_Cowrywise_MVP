@@ -1,0 +1,111 @@
+rules_version = '2';
+
+// TellaTrust Firestore Security Rules (prototype)
+// Role is read from the user's custom claims (request.auth.token.role).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+    function role() {
+      return isSignedIn() ? request.auth.token.role : 'guest';
+    }
+    function isStaff() {
+      return role() in ['support', 'finance', 'compliance', 'admin', 'super_admin'];
+    }
+    function isAdmin() {
+      return role() in ['admin', 'super_admin'];
+    }
+
+    // Customers read/write their own profile; staff can read.
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isStaff();
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Wallet is owner-readable. In PRODUCTION balances move only via Cloud Functions;
+    // for this PROTOTYPE (simulated money, no Functions/Blaze plan) the owner may write
+    // their own wallet directly from the client.
+    match /wallets/{uid} {
+      allow read: if isOwner(uid) || isStaff();
+      allow write: if isOwner(uid); // prototype: owner-only client writes
+    }
+
+    // Transactions: owner & staff read. Prototype allows the owner to create their own
+    // transaction records (simulated). Updates/deletes stay locked (append-only).
+    match /transactions/{txnId} {
+      allow read: if isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // Savings plans: owner-managed, staff-readable.
+    match /savings_plans/{planId} {
+      allow read: if isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+    }
+
+    // Group savings: owner read/write (prototype).
+    match /groups/{id} {
+      allow read: if isStaff() || (isSignedIn() && resource.data.ownerId == request.auth.uid);
+      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+
+    // Catalogs are public-readable, admin-writable.
+    match /savings_plan_types/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /investment_products/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Holdings: owner + staff read. Prototype lets the owner upsert their own positions.
+    match /holdings/{id} {
+      allow read: if isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create, update: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow delete: if false;
+    }
+    match /orders/{id} {
+      allow read: if isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // Notifications: owner reads, marks read, and (prototype) creates their own.
+    match /notifications/{id} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // Support threads: owner + support staff.
+    match /support_threads/{id} {
+      allow read, update: if isStaff() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+    }
+
+    // Audit logs: staff read-only, server-only writes.
+    match /audit_logs/{id} {
+      allow read: if isStaff();
+      allow write: if false;
+    }
+
+    // KYC: owner + compliance/admin.
+    match /kyc/{uid} {
+      allow read: if isOwner(uid) || role() in ['compliance', 'admin', 'super_admin'];
+      allow create, update: if isOwner(uid) || role() in ['compliance', 'admin', 'super_admin'];
+    }
+  }
+}

@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #ffffff;
+  color: #16231b;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.dark body {
+  background: #07120c;
+  color: #e7f0e9;
+}
+
+/* Glass surfaces (Apple-style) */
+@layer components {
+  .glass {
+    @apply border border-white/40 bg-white/60 backdrop-blur-xl;
+    box-shadow: 0 8px 32px rgba(15, 42, 24, 0.08);
+  }
+  .dark .glass {
+    @apply border-white/10 bg-white/5;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  }
+  .glass-dark {
+    @apply border border-white/15 bg-white/10 backdrop-blur-xl;
+  }
+}
+
+/* Animated gradient text */
+.text-shimmer {
+  background: linear-gradient(100deg, #1c7a3e, #3cc264, #9fe2b4, #3cc264, #1c7a3e);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 6s linear infinite;
+}
+
+/* Subtle dotted grid backdrop */
+.grid-bg {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+/* Thin custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(28, 122, 62, 0.35);
+  border-radius: 999px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(60, 194, 100, 0.3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

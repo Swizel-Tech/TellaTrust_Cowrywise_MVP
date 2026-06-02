@@ -1,0 +1,23 @@
+{
+  "name": "tellavault",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TellaTrust — savings & investment platform prototype (Swizel Technologies Limited)",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "functions"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w apps/web",
+    "dev:web": "npm run dev -w apps/web",
+    "dev:admin": "npm run dev -w apps/admin",
+    "build": "npm run build -w apps/web && npm run build -w apps/admin",
+    "build:web": "npm run build -w apps/web",
+    "build:admin": "npm run build -w apps/admin",
+    "lint": "echo \"(add eslint later)\""
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

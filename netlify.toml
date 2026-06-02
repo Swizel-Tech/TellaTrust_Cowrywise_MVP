@@ -1,0 +1,24 @@
+# Netlify config for TellaTrust.
+# This builds the customer PWA. The admin console deploys as a SEPARATE Netlify
+# site pointing at the same repo with base = "apps/admin" (set in its site settings).
+
+[build]
+  base = "apps/web"
+  command = "npm install && npm run build"
+  publish = "apps/web/dist"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# SPA fallback so client-side routes work on refresh / deep links.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
