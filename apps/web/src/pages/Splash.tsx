@@ -78,7 +78,8 @@ export default function Splash() {
 
   const finish = () => {
     localStorage.setItem('tv_splash_seen', '1');
-    navigate('/welcome');
+    // In the installed app, go straight to login after the splash sequence.
+    navigate('/login');
   };
   const next = () => (last ? finish() : setI((v) => v + 1));
 

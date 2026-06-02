@@ -29,10 +29,14 @@ function Home() {
     window.matchMedia('(display-mode: standalone)').matches ||
     (window.navigator as unknown as { standalone?: boolean }).standalone === true;
 
+  // Browser ("web view"): straight to the marketing landing page.
   if (!isStandalone) return <Landing />;
 
+  // Installed app: first launch shows the splash sequence, then login.
+  // Later launches go straight to login (remembered users are auto-forwarded
+  // to /app by the login screen).
   const seen = localStorage.getItem('tv_splash_seen') === '1';
-  return seen ? <Landing /> : <Navigate to="/splash" replace />;
+  return seen ? <Navigate to="/login" replace /> : <Navigate to="/splash" replace />;
 }
 
 export default function App() {
