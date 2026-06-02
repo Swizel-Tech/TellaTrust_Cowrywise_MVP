@@ -12,6 +12,32 @@ body,
   height: 100%;
 }
 
+/* Prevent horizontal overflow on small screens (the "not tallying with screen
+   size" issue) and stop iOS rubber-band side-scroll. */
+html,
+body {
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior-y: none;
+}
+
+/* iPhone safe-area + dynamic-viewport helpers (the notch & home indicator). */
+@layer utilities {
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  /* room for the fixed bottom tab bar + the home-indicator inset */
+  .pb-tabbar {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 4.75rem);
+  }
+  .bottom-safe {
+    bottom: env(safe-area-inset-bottom);
+  }
+}
+
 body {
   margin: 0;
   font-family: 'Inter', system-ui, sans-serif;

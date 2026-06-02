@@ -43,7 +43,7 @@ export default function SupportWidget() {
         onClick={() => setOpen((v) => !v)}
         aria-label="Support chat"
         data-tour="support"
-        className="fixed bottom-5 right-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-emerald-400 to-green-brand text-white shadow-xl shadow-emerald-500/30 transition hover:scale-105"
+        className="fixed bottom-24 right-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-gradient-to-br from-emerald-400 to-green-brand text-white shadow-xl shadow-emerald-500/30 transition hover:scale-105 md:bottom-5"
       >
         {open ? '✕' : (
           <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -53,7 +53,7 @@ export default function SupportWidget() {
       </button>
 
       {open && (
-        <div className="fixed bottom-24 right-5 z-40 flex h-[28rem] w-[22rem] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-3xl border border-emerald-100 bg-white shadow-2xl dark:border-white/10 dark:bg-[#0a160e]">
+        <div className="fixed bottom-40 right-5 z-40 flex h-[28rem] max-h-[70dvh] w-[22rem] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-3xl border border-emerald-100 bg-white shadow-2xl dark:border-white/10 dark:bg-[#0a160e] md:bottom-24">
           <div className="flex items-center gap-3 bg-gradient-to-br from-emerald-400 to-green-brand px-4 py-3 text-white">
             <span className="grid h-9 w-9 place-items-center rounded-full bg-white/20 font-bold">T</span>
             <div>
