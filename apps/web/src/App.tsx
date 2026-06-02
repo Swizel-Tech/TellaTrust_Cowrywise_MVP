@@ -18,8 +18,19 @@ import Profile from './pages/app/Profile';
 import Learn from './pages/app/Learn';
 import Referral from './pages/app/Referral';
 
-/** First-time visitors see the splash sequence; afterwards they land on the marketing page. */
+/**
+ * The splash sequence is only for the installed PWA experience. In a normal
+ * browser ("web view") we skip it entirely and go straight to the landing page.
+ * Inside an installed PWA (standalone display mode), first-time launches show
+ * the splash, then land on the marketing page.
+ */
 function Home() {
+  const isStandalone =
+    window.matchMedia('(display-mode: standalone)').matches ||
+    (window.navigator as unknown as { standalone?: boolean }).standalone === true;
+
+  if (!isStandalone) return <Landing />;
+
   const seen = localStorage.getItem('tv_splash_seen') === '1';
   return seen ? <Landing /> : <Navigate to="/splash" replace />;
 }

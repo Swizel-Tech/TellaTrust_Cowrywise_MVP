@@ -6,8 +6,9 @@ type Theme = 'light' | 'dark';
 export function useTheme() {
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem('tv_theme') as Theme | null;
-    if (saved) return saved;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    // Default to light mode for first-time visitors; the user can switch to dark
+    // with the toggle and their choice is remembered.
+    return saved ?? 'light';
   });
 
   useEffect(() => {

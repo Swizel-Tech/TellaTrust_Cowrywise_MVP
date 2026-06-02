@@ -8,6 +8,12 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
+      // The admin console is served at /admin on the same domain. Without this,
+      // the customer app's service worker would serve index.html for /admin
+      // navigations (SPA fallback) and the admin would never load.
+      workbox: {
+        navigateFallbackDenylist: [/^\/admin/],
+      },
       manifest: {
         name: 'TellaTrust',
         short_name: 'TellaTrust',

@@ -1,16 +1,27 @@
 # Netlify config for TellaTrust.
-# This builds the customer PWA. The admin console deploys as a SEPARATE Netlify
-# site pointing at the same repo with base = "apps/admin" (set in its site settings).
+#
+# ONE Netlify site serves both apps from this monorepo:
+#   /        -> customer PWA   (apps/web)
+#   /admin   -> admin console  (apps/admin)
+#
+# The build runs from the REPO ROOT (no `base`) so npm workspaces resolve
+# (@tellavault/shared). We build both apps, then copy the admin's dist into
+# apps/web/dist/admin so the single publish folder contains both.
 
 [build]
-  base = "apps/web"
-  command = "npm install && npm run build"
-  publish = "dist"
+  command = "npm install && npm run build:web && npm run build:admin && rm -rf apps/web/dist/admin && mkdir -p apps/web/dist/admin && cp -r apps/admin/dist/. apps/web/dist/admin/"
+  publish = "apps/web/dist"
 
 [build.environment]
   NODE_VERSION = "20"
 
-# SPA fallback so client-side routes work on refresh / deep links.
+# SPA fallback for the admin (must come BEFORE the catch-all below).
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/index.html"
+  status = 200
+
+# SPA fallback for the customer app.
 [[redirects]]
   from = "/*"
   to = "/index.html"
@@ -19,6 +30,5 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
