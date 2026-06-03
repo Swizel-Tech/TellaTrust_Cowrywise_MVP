@@ -6,6 +6,17 @@
     <meta name="theme-color" content="#0F2A18" />
     <title>TellaTrust — Save, Invest, Grow</title>
 
+    <!-- Apply saved theme before first paint so safe-area regions never flash white. -->
+    <script>
+      (function () {
+        try {
+          if ((localStorage.getItem('tv_theme') || 'light') === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Basic SEO -->
     <link rel="canonical" href="https://tellatrust.netlify.app/" />
     <meta name="description" content="Save, invest, and grow your money safely with TellaTrust." />

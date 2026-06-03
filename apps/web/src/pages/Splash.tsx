@@ -87,12 +87,13 @@ export default function Splash() {
 
   return (
     <div
-      className="relative flex h-full min-h-screen flex-col items-center justify-center px-6 text-center text-mint"
+      className="fixed inset-0 flex flex-col items-center justify-center px-6 text-center text-mint"
       style={{ background: slide.bg }}
     >
       <button
         onClick={finish}
-        className="absolute right-5 top-5 text-xs font-semibold uppercase tracking-wider text-white/70 hover:text-white"
+        className="absolute right-5 text-xs font-semibold uppercase tracking-wider text-white/70 hover:text-white"
+        style={{ top: 'calc(1.25rem + env(safe-area-inset-top))' }}
       >
         Skip
       </button>
@@ -103,7 +104,7 @@ export default function Splash() {
         <p className="mt-3 max-w-xs text-sm leading-relaxed text-mint/90">{slide.sub}</p>
       </div>
 
-      <div className="absolute bottom-24 flex gap-2">
+      <div className="absolute flex gap-2" style={{ bottom: 'calc(6.5rem + env(safe-area-inset-bottom))' }}>
         {slides.map((s, idx) => (
           <span
             key={s.key}
@@ -116,7 +117,8 @@ export default function Splash() {
 
       <button
         onClick={next}
-        className="absolute bottom-10 rounded-full bg-green-bright px-10 py-3 text-sm font-bold text-ink shadow-lg transition hover:brightness-110"
+        className="absolute rounded-full bg-green-bright px-10 py-3 text-sm font-bold text-ink shadow-lg transition hover:brightness-110"
+        style={{ bottom: 'calc(2.5rem + env(safe-area-inset-bottom))' }}
       >
         {last ? 'Get started' : 'Next'}
       </button>
